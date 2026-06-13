@@ -1,0 +1,129 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nike Collection</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #fff;
+        }
+
+        header {
+            background: black;
+            text-align: center;
+            padding: 30px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 40px;
+            letter-spacing: 2px;
+        }
+
+        section {
+            padding: 40px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #ff3c00;
+            padding-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #1c1c1c;
+            padding: 20px;
+            border-radius: 10px;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            background: #ff3c00;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>NIKE</h1>
+    <p>Just Do It</p>
+</header>
+
+<section>
+    <h2>Shoes</h2>
+    <div class="grid">
+        <div class="card">Running Shoes</div>
+        <div class="card">Basketball Shoes</div>
+        <div class="card">Football Boots</div>
+        <div class="card">Training Shoes</div>
+        <div class="card">Lifestyle Sneakers</div>
+    </div>
+</section>
+
+<section>
+    <h2>Clothing</h2>
+    <div class="grid">
+        <div class="card">T-Shirts</div>
+        <div class="card">Hoodies</div>
+        <div class="card">Jackets</div>
+        <div class="card">Shorts</div>
+        <div class="card">Tracksuits</div>
+    </div>
+</section>
+
+<section>
+    <h2>Sportswear</h2>
+    <div class="grid">
+        <div class="card">Running Gear</div>
+        <div class="card">Gym Wear</div>
+        <div class="card">Football Kits</div>
+        <div class="card">Basketball Gear</div>
+    </div>
+</section>
+
+<section>
+    <h2>Accessories</h2>
+    <div class="grid">
+        <div class="card">Backpacks</div>
+        <div class="card">Caps</div>
+        <div class="card">Socks</div>
+        <div class="card">Gloves</div>
+        <div class="card">Water Bottles</div>
+    </div>
+</section>
+
+<section>
+    <h2>Equipment</h2>
+    <div class="grid">
+        <div class="card">Football</div>
+        <div class="card">Basketballs</div>
+        <div class="card">Gym Equipment</div>
+        <div class="card">Training Accessories</div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Nike Showcase | Just Do It</p>
+</footer>
+
+</body>
+</html>

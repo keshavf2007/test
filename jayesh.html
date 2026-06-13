@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Racing Experience</title>
+    <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap)" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e10600;
+            --neon-red: #ff1744;
+            --neon-cyan: #00f5ff;
+            --neon-yellow: #ffea00;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --card-bg: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(225, 6, 0, 0.3);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-red);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(225, 6, 0, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-red);
+            box-shadow: 0 0 10px var(--neon-red);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-red);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--darker-bg);
+        }
+
+        .hero-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 50% 50%, rgba(225, 6, 0, 0.15) 0%, transparent 50%),
+                linear-gradient(180deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+
+        .speed-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .speed-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-red), transparent);
+            animation: speedLine 1.5s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes speedLine {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(200%);
+                opacity: 0;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--neon-red) 50%, var(--text-primary) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .f1-car {
+            position: absolute;
+            bottom: 15%;
+            width: 60%;
+            max-width: 800px;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 30px rgba(225, 6, 0, 0.5));
+            animation: carFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes carFloat {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--primary-red) 0%, #b30500 100%);
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(225, 6, 0, 0.6);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 5%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary-red);
+            box-shadow: 0 0 20px var(--primary-red);
+        }
+
+        /* Teams Section */
+        .teams-section {
+            background: linear-gradient(180deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(225, 6, 0, 0.2);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: var(--team-color, var(--primary-red));
+            transition: height 0.3s ease;
+        }
+
+        .team-card:hover::before {
+            height: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--team-color, var(--primary-red));
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(225, 6, 0, 0.2);
+        }
+
+        .team-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--team-color, var(--primary-red)), transparent);
+            color: var(--text-primary);
+        }
+
+        .team-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .team-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--team-color, var(--neon-red));
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Drivers Section */
+        .drivers-section {
+            background: var(--darker-bg);
+        }
+
+        .drivers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .driver-card {
+            background: linear-gradient(180deg, var(--card-bg) 0%, rgba(17,17,17,0.5) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .driver-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--driver-color, var(--primary-red));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .driver-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .driver-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .driver-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(180deg, var(--driver-color, var(--primary-red)) 0%, var(--card-bg) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .driver-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.1);
+            position: absolute;
+        }
+
+        .driver-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .driver-info {
+            padding: 1.5rem;
+        }
+
+        .driver-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .driver-team {
+            color: var(--driver-color, var(--neon-red));
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .driver-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .driver-stat {
+            text-align: center;
+        }
+
+        .driver-stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .driver-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* Speed Feature */
+        .speed-section {
+            background: linear-gradient(180deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .speed-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .speedometer {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 3rem;
+            position: relative;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--card-bg) 0%, var(--darker-bg) 100%);
+            border: 4px solid rgba(225, 6, 0, 0.3);
+            box-shadow: 0 0 50px rgba(225, 6, 0, 0.2), inset 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .speedometer-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .speed-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--neon-red);
+            text-shadow: 0 0 30px var(--neon-red);
+            transition: all 0.3s ease;
+        }
+
+        .speed-unit {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+        }
+
+        .speedometer-ring {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--neon-red);
+            animation: none;
+        }
+
+        .speedometer-ring.active {
+            animation: spin 0.5s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .boost-button {
+            padding: 1.5rem 4rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--primary-red) 0%, #ff4444 50%, var(--primary-red) 100%);
+            background-size: 200% auto;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            clip-path: polygon(20px 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .boost-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(225, 6, 0, 0.6);
+            animation: buttonPulse 0.5s ease infinite;
+        }
+
+        .boost-button.boosting {
+            animation: boostAnimation 0.1s ease infinite;
+            background-position: 100% center;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(225, 6, 0, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(225, 6, 0, 0.8); }
+        }
+
+        @keyframes boostAnimation {
+            0%, 100% { transform: translateX(-2px); }
+            50% { transform: translateX(2px); }
+        }
+
+        .boost-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-red);
+            border-radius: 50%;
+            animation: particleFly 1s ease-out forwards;
+        }
+
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0);
+            }
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            background: var(--dark-bg);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 16/10;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--card-bg);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease, filter 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.15);
+            filter: brightness(0.7);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(180deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+        }
+
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: var(--card-bg);
+            border: 2px solid rgba(255,255,255,0.1);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px rgba(225, 6, 0, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        textarea.form-input {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            padding: 1.2rem 3rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            background: var(--primary-red);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        }
+
+        .submit-button:hover {
+            background: var(--neon-red);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(225, 6, 0, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker-bg);
+            padding: 4rem 5% 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-red);
+            margin-bottom: 1rem;
+        }
+
+        .footer-desc {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .footer-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--neon-red);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(225, 6, 0, 0.3);
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .racing-stripe {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--primary-red) 0px,
+                var(--primary-red) 20px,
+                transparent 20px,
+                transparent 40px
+            );
+            opacity: 0.3;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background: var(--darker-bg);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: right 0.4s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1.5rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+
+            .hero-title {
+                letter-spacing: 4px;
+            }
+
+            .f1-car {
+                width: 90%;
+                bottom: 10%;
+            }
+
+            .speedometer {
+                width: 250px;
+                height: 250px;
+            }
+
+            .speed-value {
+                font-size: 3rem;
+            }
+
+            section {
+                padding: 4rem 5%;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="logo">F1</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#teams">Teams</a></li>
+            <li><a href="#drivers">Drivers</a></li>
+            <li><a href="#speed">Speed</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="speed-lines" id="speedLines"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">F1 Racing Experience</h1>
+            <p class="hero-subtitle">Feel the Speed. Live the Legend.</p>
+            <a href="#teams" class="cta-button">Explore Now</a>
+        </div>
+        <svg class="f1-car" viewBox="0 0 800 200" fill="none" xmlns="[w3.org](http://www.w3.org/2000/svg)">
+            <path d="M100 150 L150 150 L180 120 L350 100 L400 80 L600 75 L700 90 L750 100 L780 120 L780 150 L700 150" stroke="#e10600" stroke-width="3" fill="none"/>
+            <ellipse cx="180" cy="150" rx="35" ry="35" fill="#1a1a1a" stroke="#e10600" stroke-width="2"/>
+            <ellipse cx="180" cy="150" rx="20" ry="20" fill="#0a0a0a"/>
+            <ellipse cx="680" cy="150" rx="40" ry="40" fill="#1a1a1a" stroke="#e10600" stroke-width="2"/>
+            <ellipse cx="680" cy="150" rx="22" ry="22" fill="#0a0a0a"/>
+            <path d="M60 130 L120 100 L120 130 Z" fill="#e10600"/>
+            <path d="M750 60 L800 80 L800 95 L750 90 Z" fill="#e10600"/>
+            <path d="M400 75 L420 40 L500 40 L480 75" fill="#e10600" opacity="0.8"/>
+            <rect x="250" y="95" width="80" height="25" rx="5" fill="#1a1a1a"/>
+            <text x="260" y="115" font-family="Orbitron" font-size="14" fill="#e10600">F1</text>
+        </svg>
+    </section>
+
+    <!-- Teams Section -->
+    <section class="teams-section" id="teams">
+        <div class="section-header">
+            <h2 class="section-title">Championship Teams</h2>
+        </div>
+        <div class="teams-grid">
+            <div class="team-card fade-in" style="--team-color: #e10600;">
+                <div class="team-logo" style="background: linear-gradient(135deg, #e10600, transparent);">SF</div>
+                <h3 class="team-name">Scuderia Ferrari</h3>
+                <p class="team-info">Maranello, Italy • Est. 1929</p>
+                <div class="team-stats">
+                    <div class="stat">
+                        <div class="stat-value">16</div>
+                        <div class="stat-label">Titles</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">243</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">242</div>
+                        <div class="stat-label">Poles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card fade-in" style="--team-color: #00d2be;">
+                <div class="team-logo" style="background: linear-gradient(135deg, #00d2be, transparent);">MB</div>
+                <h3 class="team-name">Mercedes-AMG</h3>
+                <p class="team-info">Brackley, UK • Est. 2010</p>
+                <div class="team-stats">
+                    <div class="stat">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Titles</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">125</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">136</div>
+                        <div class="stat-label">Poles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card fade-in" style="--team-color: #3671c6;">
+                <div class="team-logo" style="background: linear-gradient(135deg, #3671c6, transparent);">RB</div>
+                <h3 class="team-name">Red Bull Racing</h3>
+                <p class="team-info">Milton Keynes, UK • Est. 2005</p>
+                <div class="team-stats">
+                    <div class="stat">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Titles</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">118</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">103</div>
+                        <div class="stat-label">Poles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card fade-in" style="--team-color: #ff8700;">
+                <div class="team-logo" style="background: linear-gradient(135deg, #ff8700, transparent);">ML</div>
+                <h3 class="team-name">McLaren F1</h3>
+                <p class="team-info">Woking, UK • Est. 1963</p>
+                <div class="team-stats">
+                    <div class="stat">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Titles</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">183</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Poles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card fade-in" style="--team-color: #229971;">
+                <div class="team-logo" style="background: linear-gradient(135deg, #229971, transparent);">AM</div>
+                <h3 class="team-name">Aston Martin</h3>
+                <p class="team-info">Silverstone, UK • Est. 2021</p>
+                <div class="team-stats">
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Titles</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Podiums</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Poles</div>
+                    </div>
+                </div>
+            </div>
+            <div class="team-card fade-in" style="--team-color: #2b4562;">
+                <div class="team-logo" style="background: linear-gradient(135deg, #2b4562, transparent);">AT</div>
+                <h3 class="team-name">Alpha Tauri</h3>
+                <p class="team-info">Faenza, Italy • Est. 2020</p>
+                <div class="team-stats">
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Titles</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Poles</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Drivers Section -->
+    <section class="drivers-section" id="drivers">
+        <div class="section-header">
+            <h2 class="section-title">Elite Drivers</h2>
+        </div>
+        <div class="drivers-grid">
+            <div class="driver-card fade-in" style="--driver-color: #3671c6;">
+                <div class="driver-image" style="background: linear-gradient(180deg, #3671c6 0%, var(--card-bg) 100%);">
+                    <span class="driver-number">1</span>
+                    <div class="driver-avatar">MV</div>
+                </div>
+                <div class="driver-info">
+                    <h3 class="driver-name">Max Verstappen</h3>
+                    <p class="driver-team">Red Bull Racing</p>
+                    <div class="driver-stats">
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">3</div>
+                            <div class="driver-stat-label">Titles</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">54</div>
+                            <div class="driver-stat-label">Wins</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">30</div>
+                            <div class="driver-stat-label">Poles</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="driver-card fade-in" style="--driver-color: #00d2be;">
+                <div class="driver-image" style="background: linear-gradient(180deg, #00d2be 0%, var(--card-bg) 100%);">
+                    <span class="driver-number">44</span>
+                    <div class="driver-avatar">LH</div>
+                </div>
+                <div class="driver-info">
+                    <h3 class="driver-name">Lewis Hamilton</h3>
+                    <p class="driver-team">Mercedes-AMG</p>
+                    <div class="driver-stats">
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">7</div>
+                            <div class="driver-stat-label">Titles</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">103</div>
+                            <div class="driver-stat-label">Wins</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">104</div>
+                            <div class="driver-stat-label">Poles</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="driver-card fade-in" style="--driver-color: #e10600;">
+                <div class="driver-image" style="background: linear-gradient(180deg, #e10600 0%, var(--card-bg) 100%);">
+                    <span class="driver-number">16</span>
+                    <div class="driver-avatar">CL</div>
+                </div>
+                <div class="driver-info">
+                    <h3 class="driver-name">Charles Leclerc</h3>
+                    <p class="driver-team">Scuderia Ferrari</p>
+                    <div class="driver-stats">
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">0</div>
+                            <div class="driver-stat-label">Titles</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">5</div>
+                            <div class="driver-stat-label">Wins</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">23</div>
+                            <div class="driver-stat-label">Poles</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="driver-card fade-in" style="--driver-color: #ff8700;">
+                <div class="driver-image" style="background: linear-gradient(180deg, #ff8700 0%, var(--card-bg) 100%);">
+                    <span class="driver-number">4</span>
+                    <div class="driver-avatar">LN</div>
+                </div>
+                <div class="driver-info">
+                    <h3 class="driver-name">Lando Norris</h3>
+                    <p class="driver-team">McLaren F1</p>
+                    <div class="driver-stats">
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">0</div>
+                            <div class="driver-stat-label">Titles</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">1</div>
+                            <div class="driver-stat-label">Wins</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">6</div>
+                            <div class="driver-stat-label">Poles</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Speed Feature Section -->
+    <section class="speed-section" id="speed">
+        <div class="section-header">
+            <h2 class="section-title">Feel The Speed</h2>
+        </div>
+        <div class="speed-container">
+            <div class="speedometer">
+                <div class="speedometer-ring" id="speedRing"></div>
+                <div class="speedometer-inner">
+                    <div class="speed-value" id="speedValue">0</div>
+                    <div class="speed-unit">KM/H</div>
+                </div>
+            </div>
+            <button class="boost-button" id="boostButton">
+                Boost Speed
+            </button>
+            <div class="boost-particles" id="particles"></div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <div class="section-header">
+            <h2 class="section-title">Racing Gallery</h2>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item fade-in">
+                <div class="gallery-image" style="background: linear-gradient(135deg, #e10600 0%, #1a1a1a 100%);"></div>
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Monaco Grand Prix</h3>
+                    <p class="gallery-desc">The crown jewel of Formula 1</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-image" style="background: linear-gradient(135deg, #3671c6 0%, #1a1a1a 100%);"></div>
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Pit Stop Action</h3>
+                    <p class="gallery-desc">2.0 seconds to perfection</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-image" style="background: linear-gradient(135deg, #00d2be 0%, #1a1a1a 100%);"></div>
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Night Race</h3>
+                    <p class="gallery-desc">Singapore under the lights</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-image" style="background: linear-gradient(135deg, #ff8700 0%, #1a1a1a 100%);"></div>
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Victory Celebration</h3>
+                    <p class="gallery-desc">Champagne moments</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-image" style="background: linear-gradient(135deg, #229971 0%, #1a1a1a 100%);"></div>
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">Technical Excellence</h3>
+                    <p class="gallery-desc">Engineering at its finest</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-image" style="background: linear-gradient(135deg, #2b4562 0%, #1a1a1a 100%);"></div>
+                <div class="gallery-overlay">
+                    <h3 class="gallery-title">The Grid</h3>
+                    <p class="gallery-desc">Tension before the start</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="section-header">
+            <h2 class="section-title">Get In Touch</h2>
+        </div>
+        <div class="contact-container">
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-input" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-input" placeholder="Your Message" required></textarea>
+                </div>
+                <button type="submit" class="submit-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="racing-stripe"></div>
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">F1 RACING</div>
+                <p class="footer-desc">Experience the thrill of Formula 1 racing. Where speed meets precision, and legends are born.</p>
+            </div>
+            <div>
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">→ Home</a></li>
+                    <li><a href="#teams">→ Teams</a></li>
+                    <li><a href="#drivers">→ Drivers</a></li>
+                    <li><a href="#gallery">→ Gallery</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Follow Us</h4>
+                <div class="social-links">
+                    <a href="#" class="social-link">𝕏</a>
+                    <a href="#" class="social-link">IG</a>
+                    <a href="#" class="social-link">YT</a>
+                    <a href="#" class="social-link">FB</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 F1 Racing Experience. All rights reserved. | Not affiliated with Formula 1®</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Speed lines animation
+        const speedLinesContainer = document.getElementById('speedLines');
+        function createSpeedLine() {
+            const line = document.createElement('div');
+            line.className = 'speed-line';
+            line.style.top = Math.random() * 100 + '%';
+            line.style.width = Math.random() * 200 + 100 + 'px';
+            line.style.animationDuration = Math.random() * 1 + 0.5 + 's';
+            line.style.animationDelay = Math.random() * 2 + 's';
+            speedLinesContainer.appendChild(line);
+            
+            setTimeout(() => {
+                line.remove();
+            }, 3000);
+        }
+
+        setInterval(createSpeedLine, 200);
+
+        // Boost Speed Feature
+        const boostButton = document.getElementById('boostButton');
+        const speedValue = document.getElementById('speedValue');
+        const speedRing = document.getElementById('speedRing');
+        const particles = document.getElementById('particles');
+        let currentSpeed = 0;
+        let isBoosting = false;
+        let boostInterval;
+
+        boostButton.addEventListener('mousedown', startBoost);
+        boostButton.addEventListener('mouseup', stopBoost);
+        boostButton.addEventListener('mouseleave', stopBoost);
+        boostButton.addEventListener('touchstart', startBoost);
+        boostButton.addEventListener('touchend', stopBoost);
+
+        function startBoost(e) {
+            e.preventDefault();
+            if (isBoosting) return;
+            isBoosting = true;
+            boostButton.classList.add('boosting');
+            speedRing.classList.add('active');
+            
+            boostInterval = setInterval(() => {
+                if (currentSpeed < 372) {
+                    currentSpeed += Math.random() * 15 + 5;
+                    if (currentSpeed > 372) currentSpeed = 372;
+                    speedValue.textContent = Math.round(currentSpeed);
+                    createParticle();
+                }
+            }, 50);
+        }
+
+        function stopBoost() {
+            isBoosting = false;
+            boostButton.classList.remove('boosting');
+            speedRing.classList.remove('active');
+            clearInterval(boostInterval);
+            
+            // Decelerate
+            const decelerate = setInterval(() => {
+                if (currentSpeed > 0) {
+                    currentSpeed -= 8;
+                    if (currentSpeed < 0) currentSpeed = 0;
+                    speedValue.textContent = Math.round(currentSpeed);
+                } else {
+                    clearInterval(decelerate);
+                }
+            }, 50);
+        }
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '0';
+            particles.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 1000);
+        }
+
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Form submission
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const button = contactForm.querySelector('.submit-button');
+            button.textContent = 'Message Sent!';
+            button.style.background = '#00d2be';
+            
+            setTimeout(() => {
+                button.textContent = 'Send Message';
+                button.style.background = '';
+                contactForm.reset();
+            }, 2000);
+        });
+
+        // Card hover effects with sound simulation (visual feedback)
+        document.querySelectorAll('.team-card, .driver-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            });
+        });
+
+        // Smooth parallax for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-content');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - scrolled / 700;
+            }
+        });
+    </script>
+</body>
+</html>
